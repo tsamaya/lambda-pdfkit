@@ -10,15 +10,36 @@ custom:
 provider:
   name: aws
   runtime: nodejs16.x
+  # Default region (default: us-east-1)
   region: eu-west-1
+  # Duration for CloudWatch log retention (default: forever)
+  logRetentionInDays: 14
   iam:
+    # configure the role that will be created by Serverless (simplest):
     role:
+      # Add statements to the IAM role to give permissions to Lambda functions
       statements:
         - Effect: Allow
           Action:
             - s3:PutObject
             - s3:PutObjectAcl
           Resource: 'arn:aws:s3:::${self:custom.bucket}/*'
+
+# Optional deployment packaging configuration
+package:
+  # Directories and files to include in the deployed package
+  patterns:
+    - lib/**
+    - handler.js
+    - '!.husky/**'
+    - '!README.md'
+    - '!LICENSE'
+    - '!.prettierrc'
+    - '!.eslintignore'
+    - '!.eslintrc.js'
+    - '!run.js'
+  # Package each function as an individual artifact (default: false)
+  individually: true
 
 functions:
   generatePDF:
