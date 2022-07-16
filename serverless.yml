@@ -6,6 +6,10 @@ useDotenv: true
 
 custom:
   bucket: test-files-678kph
+  esbuild:
+    bundle: true
+    minify: false
+    exclude: ['aws-sdk', 'pdfkit']
 
 provider:
   name: aws
@@ -25,12 +29,16 @@ provider:
             - s3:PutObjectAcl
           Resource: 'arn:aws:s3:::${self:custom.bucket}/*'
 
+plugins:
+  - serverless-esbuild
+
 # Optional deployment packaging configuration
 package:
   # Directories and files to include in the deployed package
   patterns:
     - lib/**
     - handler.js
+    - '!layer/**'
     - '!.husky/**'
     - '!README.md'
     - '!LICENSE'
@@ -40,9 +48,23 @@ package:
     - '!run.js'
   # Package each function as an individual artifact (default: false)
   individually: true
+  # Automatically exclude NPM dev dependencies from the deployed package (default: true)
+  excludeDevDependencies: true
+
+layers:
+  Pdfkit:
+    name: Pdfkit
+    compatibleRuntimes:
+      - nodejs14.x
+      - nodejs16.x
+    description: Required for Pdfkit
+    package:
+      artifact: layer/pdfkit-layer.zip
 
 functions:
   generatePDF:
+    layers:
+      - { Ref: PdfkitLambdaLayer }
     handler: handler.generate
     events:
       - httpApi:

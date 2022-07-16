@@ -1,0 +1,8 @@
+{
+  "name": "pdfkit-layer",
+  "version": "1.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "pdfkit": "^0.13.0"
+  }
+}
