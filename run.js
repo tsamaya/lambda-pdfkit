@@ -1,4 +1,4 @@
-const { generate } = require('./handler');
+const { generate } = require('./functions/generate-pdf/handler');
 
 const body = {
   title: 'My Title',

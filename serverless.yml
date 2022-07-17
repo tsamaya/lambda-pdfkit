@@ -36,8 +36,6 @@ plugins:
 package:
   # Directories and files to include in the deployed package
   patterns:
-    - lib/**
-    - handler.js
     - '!layer/**'
     - '!.husky/**'
     - '!README.md'
@@ -65,7 +63,7 @@ functions:
   generatePDF:
     layers:
       - { Ref: PdfkitLambdaLayer }
-    handler: handler.generate
+    handler: ./functions/generate-pdf/handler.generate
     events:
       - httpApi:
           path: /generatePDF
